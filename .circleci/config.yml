@@ -8,7 +8,7 @@ executors:
 
 #worthless piece of shit
 #orbs:
-#    docker: circleci/docker@1.2.1
+#   docker: circleci/docker@1.2.1
 
 jobs:
   make_gcc:
