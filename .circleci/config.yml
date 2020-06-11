@@ -1,0 +1,61 @@
+version: 2.1
+
+executors:
+  ecex_make_gcc:
+    docker:
+      - image: gcc:10.1.0
+    working_directory: /app
+
+#worthless piece of shit
+#orbs:
+#    docker: circleci/docker@1.2.1
+
+jobs:
+  make_gcc:
+    executor: ecex_make_gcc   
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run: make -C src
+      - run:
+          command: |
+            mkdir -p /opt/ms
+            cp ./src/microsocks /opt/ms
+            cp Dockerfile /opt/ms
+            cp init.sh /opt/ms
+          #when: on_fail
+      - store_artifacts:
+          path: /opt/ms
+          destination: ms
+      - persist_to_workspace:
+          root: /opt
+          paths:
+            - ms
+
+  build_docker:
+    working_directory: ./
+    machine: true
+    steps:
+      #- checkout
+      #- docker/check
+      - attach_workspace:
+          at: ./
+      - run:
+          command : |
+            cp ms/microsocks /home/circleci      
+            cp ms/Dockerfile /home/circleci
+            cp ms/init.sh ./ 
+            cd ./
+            echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
+            docker build -t $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+            docker tag $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:1.0.<< pipeline.number >>
+            docker push $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+
+            
+workflows:
+  build-and-publish-docker-image:
+    jobs:
+      - make_gcc
+      - build_docker:  
+          requires:
+            - make_gcc                               

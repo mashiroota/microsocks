@@ -1,7 +1,8 @@
 # if you want to change/override some variables, do so in a file called
 # config.mak, which is gets included automatically if it exists.
 
-prefix = /usr/local
+#prefix = /usr/local
+prefix = /opt
 bindir = $(prefix)/bin
 
 PROG = microsocks
