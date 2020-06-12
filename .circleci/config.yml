@@ -18,8 +18,7 @@ jobs:
       - checkout
       - run:
           command: |
-            apk add --update --no-cache \ 
-            build-base 
+            apk add --update --no-cache build-base 
       - run: make -C src
       - run:
           command: |
