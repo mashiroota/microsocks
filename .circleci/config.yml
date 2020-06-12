@@ -1,18 +1,14 @@
 version: 2.1
 
 executors:
-  ecex_make_gcc:
+  exec_make_gcc:
     docker:
       - image: alpine:latest
     working_directory: /app
 
-#worthless piece of shit
-#orbs:
-#   docker: circleci/docker@1.2.1
-
 jobs:
   make_gcc:
-    executor: ecex_make_gcc   
+    executor: exec_make_gcc   
     steps:
       - setup_remote_docker
       - checkout
@@ -26,7 +22,6 @@ jobs:
             cp ./src/microsocks /opt/ms
             cp Dockerfile /opt/ms
             cp init.sh /opt/ms
-          #when: on_fail
       - store_artifacts:
           path: /opt/ms
           destination: ms
@@ -39,8 +34,6 @@ jobs:
     working_directory: ./
     machine: true
     steps:
-      #- checkout
-      #- docker/check
       - attach_workspace:
           at: ./
       - run:
@@ -54,7 +47,6 @@ jobs:
             docker tag $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:1.0.<< pipeline.number >>
             docker push $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
 
-            
 workflows:
   build-and-publish-docker-image:
     jobs:
