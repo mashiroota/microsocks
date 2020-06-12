@@ -3,7 +3,7 @@ version: 2.1
 executors:
   ecex_make_gcc:
     docker:
-      - image: gcc:10.1.0
+      - image: alpine:latest as builder
     working_directory: /app
 
 #worthless piece of shit
@@ -16,6 +16,10 @@ jobs:
     steps:
       - setup_remote_docker
       - checkout
+      - run:
+          command: |
+            apk add --update --no-cache \ 
+            build-base 
       - run: make -C src
       - run:
           command: |
