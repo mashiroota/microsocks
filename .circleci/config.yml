@@ -49,11 +49,10 @@ jobs:
   
   build_docker_photon:
     working_directory: ./
-    machine: true
+    #machine: true
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 18.06.0-ce
+      - setup_remote_docker
       - run:
           command : |
             cd ./
