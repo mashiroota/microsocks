@@ -68,4 +68,7 @@ workflows:
       - build_docker_alpine:  
           requires:
             - make_gcc
+#      - build_docker_photon
+  test2:
+    jobs:
       - build_docker_photon                                     
